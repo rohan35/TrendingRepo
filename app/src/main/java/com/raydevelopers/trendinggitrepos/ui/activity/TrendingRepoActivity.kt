@@ -12,7 +12,7 @@ class TrendingRepoActivity : AppCompatActivity() {
         setContentView(R.layout.trending_repo_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, TrendingRepoFragment.newInstance())
+                .replace(R.id.fragment_container, TrendingRepoFragment.newInstance())
                 .commitNow()
         }
     }

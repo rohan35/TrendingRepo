@@ -1,7 +1,19 @@
 package com.raydevelopers.trendinggitrepos.ui.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.raydevelopers.trendinggitrepos.data.Constants
+import com.raydevelopers.trendinggitrepos.model.TrendingRepositoryListObject
+import com.raydevelopers.trendinggitrepos.repo.AppRepository
 
 class TrendingRepoViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+
+    fun getTrendingList(): LiveData<Any> {
+        val queryMap = HashMap<String, String>()
+        return AppRepository.getCall(
+            Constants.trendingRepoGetUrl,
+            queryMap,
+            TrendingRepositoryListObject::class.java
+        )
+    }
 }
