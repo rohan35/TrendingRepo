@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.databinding.ViewDataBinding
 import com.raydevelopers.trendinggitrepos.BR
+import com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoActivityViewModel
 import com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoViewModel
 import kotlinx.android.synthetic.main.trending_repo_activity.view.*
 
@@ -19,7 +20,7 @@ class TrendingRepoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ViewDataBinding>(this, R.layout.trending_repo_activity)
-        binding.setVariable(BR.mainViewModel, TrendingRepoViewModel())
+        binding.setVariable(BR.mainViewModel, TrendingRepoActivityViewModel())
         binding.executePendingBindings()
         setSupportActionBar(binding.root.toolBar)
         supportActionBar?.setDisplayShowTitleEnabled(false);

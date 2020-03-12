@@ -5,7 +5,7 @@
     <data>
         <variable
             name="mainViewModel"
-            type="com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoViewModel" />
+            type="com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoActivityViewModel" />
 
     </data>
 
@@ -33,6 +33,12 @@
 
 
     </androidx.appcompat.widget.Toolbar>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/E8E8E8"
+            android:layout_alignBottom="@id/toolBar" />
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"

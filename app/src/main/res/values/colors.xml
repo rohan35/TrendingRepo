@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#25282B</color>
     <color name="placeholder_bg">#dddddd</color>
+    <color name="E8E8E8">#E8E8E8</color>
 </resources>

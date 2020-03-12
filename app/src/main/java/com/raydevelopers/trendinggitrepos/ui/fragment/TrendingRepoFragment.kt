@@ -8,14 +8,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.raydevelopers.trendinggitrepos.R
 import com.raydevelopers.trendinggitrepos.adapter.RepoListRecyclerAdapter
 import com.raydevelopers.trendinggitrepos.databinding.TrendingRepoFragmentBinding
 import com.raydevelopers.trendinggitrepos.model.TrendingRepositoryListObject
 import com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoViewModel
-import androidx.recyclerview.widget.DividerItemDecoration
-
 
 
 class TrendingRepoFragment : Fragment() {
@@ -26,6 +25,7 @@ class TrendingRepoFragment : Fragment() {
 
     private lateinit var viewModel: TrendingRepoViewModel
     private lateinit var recyclerAdapter: RepoListRecyclerAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,14 +43,23 @@ class TrendingRepoFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(TrendingRepoViewModel::class.java)
         mRepoFragmentBinding?.shimmerContainer?.startShimmer()
-        viewModel.getTrendingList().observe(viewLifecycleOwner, Observer { response ->
-            response?.let {
-                val trendingRepoList = viewModel.processTrendingList(it)
-                trendingRepoList?.let {
-                    setUpRecyclerView(trendingRepoList)
-                }
 
+        viewModel.allTrendingRepositoryList.observe(viewLifecycleOwner, Observer { responseList ->
+            if (responseList.isNullOrEmpty()) {
+                viewModel.getTrendingList().observe(viewLifecycleOwner, Observer { response ->
+                    response?.let {
+                        val trendingRepoList = viewModel.processTrendingList(it)
+                        trendingRepoList?.let { list ->
+                            viewModel.insert(list)
+                        }
+
+                    }
+                })
+            } else {
+                setUpRecyclerView(responseList)
             }
+
+
         })
 
     }

@@ -11,6 +11,7 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dp_16"
     android:orientation="vertical">
 
 
@@ -33,6 +34,7 @@
         tools:text = "author"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_21"
+        android:layout_marginBottom="@dimen/dp_8"
         app:layout_constraintStart_toEndOf="@id/imageView"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -51,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         tools:text="description"
         android:text="@{trendingRepoModel.description}"
         app:layout_constraintStart_toStartOf="@id/text_author"
@@ -62,9 +64,10 @@
         android:id="@+id/text_language"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@{trendingRepoModel.language}"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintTop_toBottomOf="@id/text_description"
+        android:layout_marginBottom="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="@id/text_author"
         />
 
@@ -72,21 +75,23 @@
         android:id="@+id/text_star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@{String.valueOf(trendingRepoModel.stars)}"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@id/text_description"
+        android:layout_marginBottom="@dimen/dp_8"
         app:layout_constraintStart_toEndOf="@id/text_language" />
 
     <TextView
         android:id="@+id/text_forked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@{String.valueOf(trendingRepoModel.forks)}"
         tools:layout_editor_absoluteX="364dp"
         tools:layout_editor_absoluteY="177dp"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
         app:layout_constraintTop_toBottomOf="@id/text_description"
         app:layout_constraintStart_toEndOf="@id/text_star"/>
     <androidx.constraintlayout.widget.Group
