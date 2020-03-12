@@ -65,4 +65,7 @@ dependencies {
     // ViewModel Kotlin support
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc02"
 
+    // adding work manager for syncing database to network
+    implementation "androidx.work:work-runtime-ktx:2.2.0"
+
 }

@@ -43,25 +43,38 @@ class TrendingRepoFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(TrendingRepoViewModel::class.java)
         mRepoFragmentBinding?.shimmerContainer?.startShimmer()
+        // observer the list retrieved from database
+        observeDatabaseList()
+        // onClick listener for swip to refresh
+        mRepoFragmentBinding?.swipeRefresh?.setOnRefreshListener {
+            getTrendingListRemotely()
+        }
 
+    }
+
+    private fun observeDatabaseList() {
         viewModel.allTrendingRepositoryList.observe(viewLifecycleOwner, Observer { responseList ->
             if (responseList.isNullOrEmpty()) {
-                viewModel.getTrendingList().observe(viewLifecycleOwner, Observer { response ->
-                    response?.let {
-                        val trendingRepoList = viewModel.processTrendingList(it)
-                        trendingRepoList?.let { list ->
-                            viewModel.insert(list)
-                        }
-
-                    }
-                })
+                getTrendingListRemotely()
             } else {
                 setUpRecyclerView(responseList)
             }
 
 
         })
+    }
 
+    private fun getTrendingListRemotely() {
+        viewModel.getTrendingList().observe(viewLifecycleOwner, Observer { response ->
+            response?.let {
+                val trendingRepoList = viewModel.processTrendingList(it)
+                trendingRepoList?.let { list ->
+                    viewModel.insert(list)
+                    mRepoFragmentBinding?.swipeRefresh?.isRefreshing = false
+                }
+
+            }
+        })
     }
 
     private fun setUpRecyclerView(trendingRepoList: List<TrendingRepositoryListObject>)
