@@ -15,7 +15,7 @@ class NetworkResponse(var responseData: MutableLiveData<Any>, var objectClass: C
 
     override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>) {
         var body:String
-        if (response?.body() != null && null != (response.body() as ResponseBody).contentType() && null != (response.body() as ResponseBody).contentType().subtype() && (response.body() as ResponseBody).contentType().subtype().equals(
+        if (response?.body() != null && null != (response.body() as ResponseBody).contentType() && null != (response.body() as ResponseBody).contentType()?.subtype() && (response.body() as ResponseBody).contentType()?.subtype().equals(
                 "json",
                 ignoreCase = true
             )
