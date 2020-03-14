@@ -10,7 +10,7 @@ import retrofit2.Response
 class NetworkResponse(var responseData: MutableLiveData<Any>, var objectClass: Class<*>):
     Callback<ResponseBody> {
     override fun onFailure(call: Call<ResponseBody>?, t: Throwable) {
-        this.responseData.postValue(NetworkResource.error(null as Any?, t, 0, null as Headers))
+        this.responseData.postValue(NetworkResource.error(null as Any?, t, 0))
     }
 
     override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>) {
@@ -26,7 +26,7 @@ class NetworkResponse(var responseData: MutableLiveData<Any>, var objectClass: C
                     NetworkUtils.getModelFromJsonString(
                         body,
                         this.objectClass
-                    ), response.code(), response.headers()
+                    ), response.code()
                 )
             )
 
@@ -39,7 +39,7 @@ class NetworkResponse(var responseData: MutableLiveData<Any>, var objectClass: C
                     NetworkUtils.getModelFromJsonString(
                         body,
                         this.objectClass
-                    ), null as Throwable,response.code(), response.headers()
+                    ),  Throwable(),response.code()
                 )
             )
         }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TrendingGitRepos</string>
+    <string name="error_1">Something went wrong..</string>
+    <string name="error_2">An alien is probably blocking your signal</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.core.app.ComponentActivity
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.view.Menu
 import androidx.databinding.ViewDataBinding
 import com.raydevelopers.trendinggitrepos.BR
 import com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoActivityViewModel
@@ -31,6 +32,9 @@ class TrendingRepoActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return super.onCreateOptionsMenu(menu)
+    }
 
 
 }

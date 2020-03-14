@@ -8,5 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="retryButton">
+        <item name="android:textColor">@color/color_31b057</item>
+        <item name="android:background">@drawable/retry_button_bg</item>
+        <item name="android:layout_margin">@dimen/dp_16</item>
+
+    </style>
+
 
 </resources>

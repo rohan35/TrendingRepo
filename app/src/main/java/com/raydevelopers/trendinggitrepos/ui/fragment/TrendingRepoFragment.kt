@@ -15,6 +15,7 @@ import com.raydevelopers.trendinggitrepos.adapter.RepoListRecyclerAdapter
 import com.raydevelopers.trendinggitrepos.databinding.TrendingRepoFragmentBinding
 import com.raydevelopers.trendinggitrepos.model.TrendingRepositoryListObject
 import com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoViewModel
+import kotlinx.android.synthetic.main.trending_repo_error_state.view.*
 
 
 class TrendingRepoFragment : Fragment() {
@@ -45,38 +46,52 @@ class TrendingRepoFragment : Fragment() {
         mRepoFragmentBinding?.shimmerContainer?.startShimmer()
         // observer the list retrieved from database
         observeDatabaseList()
+        // observer work manager
+        observerWorkManagerResponse()
         // onClick listener for swip to refresh
         mRepoFragmentBinding?.swipeRefresh?.setOnRefreshListener {
-            getTrendingListRemotely()
+           viewModel.runWorkManagerTask()
+        }
+
+        mRepoFragmentBinding?.errorState?.retryButton?.setOnClickListener{
+            mRepoFragmentBinding?.shimmerContainer?.startShimmer()
+            viewModel.runWorkManagerTask()
         }
 
     }
 
     private fun observeDatabaseList() {
         viewModel.allTrendingRepositoryList.observe(viewLifecycleOwner, Observer { responseList ->
-            if (responseList.isNullOrEmpty()) {
-                getTrendingListRemotely()
-            } else {
+            if (responseList.isNullOrEmpty() && mRepoFragmentBinding?.swipeRefresh?.isRefreshing == false) {
+                viewModel.runWorkManagerTask()
+            } else if (!responseList.isNullOrEmpty()) {
                 setUpRecyclerView(responseList)
+                viewModel.setWorkerState(true)
+                mRepoFragmentBinding?.swipeRefresh?.isRefreshing = false
             }
 
 
         })
     }
 
-    private fun getTrendingListRemotely() {
-        viewModel.getTrendingList().observe(viewLifecycleOwner, Observer { response ->
-            response?.let {
-                val trendingRepoList = viewModel.processTrendingList(it)
-                trendingRepoList?.let { list ->
-                    viewModel.insert(list)
+    private fun observerWorkManagerResponse() {
+        viewModel.getAppRepositoryLiveData().observe(viewLifecycleOwner, Observer { state ->
+            if (state != null) {
+                if (!state) {
                     mRepoFragmentBinding?.swipeRefresh?.isRefreshing = false
+                    mRepoFragmentBinding?.errorState?.visibility = View.VISIBLE
+                    mRepoFragmentBinding?.shimmerContainer?.visibility = View.GONE
+                    mRepoFragmentBinding?.recyclerView?.visibility = View.GONE
+                }
+                else
+                {
+                    mRepoFragmentBinding?.errorState?.visibility = View.GONE
+                    mRepoFragmentBinding?.recyclerView?.visibility = View.VISIBLE
                 }
 
             }
         })
     }
-
     private fun setUpRecyclerView(trendingRepoList: List<TrendingRepositoryListObject>)
     {
         recyclerAdapter = RepoListRecyclerAdapter(trendingRepoList)

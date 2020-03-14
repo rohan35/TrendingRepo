@@ -14,4 +14,7 @@ interface TrendingDao {
 
     @Query("SELECT * FROM TrendingRepositoryListObject")
     fun getTrendingRepoList(): LiveData<List<TrendingRepositoryListObject>>
+
+    @Query("DELETE FROM TrendingRepositoryListObject")
+    suspend fun deleteAll()
 }
