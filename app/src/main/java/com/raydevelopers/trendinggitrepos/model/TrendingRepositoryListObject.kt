@@ -20,3 +20,9 @@ data class TrendingRepositoryListObject(
     val stars: Int,
     val url: String
 )
+{
+    fun getDescriptionAndUrl():String
+    {
+        return "$description($url)"
+    }
+}

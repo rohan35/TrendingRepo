@@ -1,9 +1,11 @@
 package com.raydevelopers.trendinggitrepos.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,6 +18,8 @@ import com.raydevelopers.trendinggitrepos.databinding.TrendingRepoFragmentBindin
 import com.raydevelopers.trendinggitrepos.model.TrendingRepositoryListObject
 import com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoViewModel
 import kotlinx.android.synthetic.main.trending_repo_error_state.view.*
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 
 
 class TrendingRepoFragment : Fragment() {
@@ -26,7 +30,7 @@ class TrendingRepoFragment : Fragment() {
 
     private lateinit var viewModel: TrendingRepoViewModel
     private lateinit var recyclerAdapter: RepoListRecyclerAdapter
-
+    private  var prefs:SharedPreferences? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,18 +46,24 @@ class TrendingRepoFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(TrendingRepoViewModel::class.java)
+        viewModel = ViewModelProviders.of(activity!!).get(TrendingRepoViewModel::class.java)
         mRepoFragmentBinding?.shimmerContainer?.startShimmer()
         // observer the list retrieved from database
         observeDatabaseList()
         // observer work manager
         observerWorkManagerResponse()
+        // check if launchec forst time to fill the database
+        if(launchedFirstTime())
+            viewModel.runWorkManagerTask()
+
         // onClick listener for swip to refresh
         mRepoFragmentBinding?.swipeRefresh?.setOnRefreshListener {
            viewModel.runWorkManagerTask()
         }
 
         mRepoFragmentBinding?.errorState?.retryButton?.setOnClickListener{
+            mRepoFragmentBinding?.errorState?.visibility = View.GONE
+            mRepoFragmentBinding?.shimmerContainer?.visibility = View.VISIBLE
             mRepoFragmentBinding?.shimmerContainer?.startShimmer()
             viewModel.runWorkManagerTask()
         }
@@ -62,9 +72,7 @@ class TrendingRepoFragment : Fragment() {
 
     private fun observeDatabaseList() {
         viewModel.allTrendingRepositoryList.observe(viewLifecycleOwner, Observer { responseList ->
-            if (responseList.isNullOrEmpty() && mRepoFragmentBinding?.swipeRefresh?.isRefreshing == false) {
-                viewModel.runWorkManagerTask()
-            } else if (!responseList.isNullOrEmpty()) {
+           if (!responseList.isNullOrEmpty()) {
                 setUpRecyclerView(responseList)
                 viewModel.setWorkerState(true)
                 mRepoFragmentBinding?.swipeRefresh?.isRefreshing = false
@@ -86,6 +94,7 @@ class TrendingRepoFragment : Fragment() {
                 else
                 {
                     mRepoFragmentBinding?.errorState?.visibility = View.GONE
+                    if(mRepoFragmentBinding?.recyclerView?.isVisible == false)
                     mRepoFragmentBinding?.recyclerView?.visibility = View.VISIBLE
                 }
 
@@ -98,11 +107,23 @@ class TrendingRepoFragment : Fragment() {
         mRepoFragmentBinding?.recyclerView?.layoutManager  = LinearLayoutManager(this.context).apply {
             orientation = LinearLayoutManager.VERTICAL
         }
-        val decoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        mRepoFragmentBinding?.recyclerView?.addItemDecoration(decoration)
         mRepoFragmentBinding?.recyclerView?.adapter = recyclerAdapter
         mRepoFragmentBinding?.shimmerContainer?.stopShimmer()
         mRepoFragmentBinding?.shimmerContainer?.visibility = View.GONE
     }
 
+    private fun launchedFirstTime():Boolean
+    {
+        prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val firstTimeLaunch = prefs?.getBoolean(getString(R.string.first_time_launch),true)
+        if(firstTimeLaunch == null || firstTimeLaunch == true)
+        {
+
+            with (prefs?.edit()) {
+                this?.putBoolean(getString(R.string.first_time_launch), false)
+                this?.commit()
+            }
+        }
+        return firstTimeLaunch?:true
+    }
 }

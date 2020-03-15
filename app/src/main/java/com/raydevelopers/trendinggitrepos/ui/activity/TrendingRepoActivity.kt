@@ -10,6 +10,8 @@ import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.databinding.ViewDataBinding
 import com.raydevelopers.trendinggitrepos.BR
 import com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoActivityViewModel
@@ -24,6 +26,7 @@ class TrendingRepoActivity : AppCompatActivity() {
         binding.setVariable(BR.mainViewModel, TrendingRepoActivityViewModel())
         binding.executePendingBindings()
         setSupportActionBar(binding.root.toolBar)
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         supportActionBar?.setDisplayShowTitleEnabled(false);
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -33,8 +36,11 @@ class TrendingRepoActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return super.onCreateOptionsMenu(menu)
+       menuInflater.inflate(R.menu.menu,menu)
+        return true
     }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
 }

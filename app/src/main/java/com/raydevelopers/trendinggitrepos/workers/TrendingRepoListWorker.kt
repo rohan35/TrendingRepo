@@ -1,6 +1,7 @@
 package com.raydevelopers.trendinggitrepos.workers
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.work.CoroutineWorker
@@ -28,21 +29,25 @@ open class TrendingRepoListWorker(application: Context, params: WorkerParameters
     }
 
     override suspend fun doWork(): Result = coroutineScope {
+        Log.i("Hey u entered doWork()","doWork((0)")
         var result: Result = Result.failure()
         // launchng it in global scope as observer should in main thread
         val job = async {
             GlobalScope.launch(Dispatchers.Main) {
                 getTrendingList().observeOnce(Observer { response ->
                     response?.let {
+                        Log.i("Hey u entered doWork()","doWork((1)")
                         CoroutineScope(Dispatchers.IO).launch {
                             val trendingRepoList = processTrendingList(it)
                             result = if (!trendingRepoList.isNullOrEmpty()) {
                                 repository.deleteAll()
                                 repository.insert(trendingRepoList)
                                 repository.setWorkManagerState(true)
+                                Log.i("Hey u entered doWork()","doWork((S)")
                                 Result.success()
                             } else {
                                 repository.setWorkManagerState(false)
+                                Log.i("Hey u entered doWork()","doWork((F)")
                                 Result.failure()
                             }
 
@@ -56,6 +61,7 @@ open class TrendingRepoListWorker(application: Context, params: WorkerParameters
             }
         }
         job.await()
+        Log.i("Hey u entered doWork()","doWork((last)")
         return@coroutineScope result
     }
 

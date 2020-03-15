@@ -25,6 +25,7 @@ class RepoListRecyclerAdapter(var repoList: List<TrendingRepositoryListObject>):
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val isExpanded: Boolean = position == mExpandedPosition;
         (holder as ListViewHolder).bind(repoList[position])
+        holder.binding.divider.visibility = if (!isExpanded) View.VISIBLE else View.GONE
         holder.binding.layoutGroup.visibility = if (isExpanded) View.VISIBLE else View.GONE
         holder.itemView.isActivated = isExpanded;
         if (isExpanded)

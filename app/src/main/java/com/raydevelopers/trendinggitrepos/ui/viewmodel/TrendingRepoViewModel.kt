@@ -18,6 +18,7 @@ class TrendingRepoViewModel(application: Application) : AndroidViewModel(applica
     private val repository: AppRepository
     private val workManager = WorkManager.getInstance(application)
     private val TAG_OUTPUT = "workTag"
+    var refreshOnButtonClicked = false
     init {
         // Gets reference to WordDao from WordRoomDatabase to construct
         // the correct WordRepository.
@@ -27,7 +28,6 @@ class TrendingRepoViewModel(application: Application) : AndroidViewModel(applica
     }
 
     private fun createConstraints() = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.UNMETERED)  // if connected to WIFI
         // other values(NOT_REQUIRED, CONNECTED, NOT_ROAMING, METERED)
         .setRequiresBatteryNotLow(true)                 // if the battery is not low
         .setRequiresStorageNotLow(true)                 // if the storage is not low
@@ -37,8 +37,8 @@ class TrendingRepoViewModel(application: Application) : AndroidViewModel(applica
         val build = PeriodicWorkRequestBuilder<TrendingRepoListWorker>(
             2,
             TimeUnit.HOURS
-        )  // setting period to 12 hours
-            .addTag(TAG_OUTPUT)
+        )  // setting period to 2 hours
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL,2,TimeUnit.HOURS)
             .setConstraints(createConstraints())
             .build()
         return build
@@ -46,15 +46,11 @@ class TrendingRepoViewModel(application: Application) : AndroidViewModel(applica
 
     fun runWorkManagerTask()
     {
-        workManager.enqueue(createWorkRequest())
+        workManager.enqueueUniquePeriodicWork(TAG_OUTPUT,ExistingPeriodicWorkPolicy.REPLACE,createWorkRequest())
     }
     fun getAppRepositoryLiveData():LiveData<Boolean>
     {
         return repository.getWorkManagerStateLiveData()
-    }
-    fun getAppRepositoryLiveDataValue():Boolean
-    {
-        return getAppRepositoryLiveData().value?:true
     }
     fun setWorkerState(state:Boolean)
     {
