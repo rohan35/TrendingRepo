@@ -31,7 +31,9 @@ open class AppRepository private constructor(private var mTrendingDao: TrendingD
         // this live data will return the success and failure cases of work manager
         val workManagerStateLiveData = MutableLiveData<Boolean>()
     }
-
+    /*
+    get call to make a netwotrk call and give live data
+     */
     fun getCall(
         subUrl: String,
         queryMap: Map<String, String>,

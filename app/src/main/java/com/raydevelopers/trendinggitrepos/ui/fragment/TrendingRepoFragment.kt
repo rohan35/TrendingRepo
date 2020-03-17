@@ -126,7 +126,9 @@ class TrendingRepoFragment : Fragment() {
         }
         return firstTimeLaunch?:true
     }
-
+    /*
+    get viewmodel object from dependency provider
+     */
     private fun getViewModel(): TrendingRepoViewModel {
         var viewModelFactory = DependencyProvider.provideViewModelFactory(activity!!.application)
         return ViewModelProviders.of(this, viewModelFactory).get(TrendingRepoViewModel::class.java)

@@ -41,6 +41,8 @@ class TrendingRepoActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // not handled cases as it was not supoosed to do in the description
+
         return super.onOptionsItemSelected(item)
     }
 }

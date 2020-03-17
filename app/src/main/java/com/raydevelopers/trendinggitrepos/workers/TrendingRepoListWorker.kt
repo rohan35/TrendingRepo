@@ -61,7 +61,7 @@ open class TrendingRepoListWorker(application: Context, params: WorkerParameters
         return@coroutineScope result
     }
 
-    fun processTrendingList(rawResponse: Any): List<TrendingRepositoryListObject>? {
+    private fun processTrendingList(rawResponse: Any): List<TrendingRepositoryListObject>? {
         val response = rawResponse as NetworkResource<Array<TrendingRepositoryListObject>>
         when (response.status) {
             NetworkResource.Status.SUCCESS -> {
@@ -75,7 +75,7 @@ open class TrendingRepoListWorker(application: Context, params: WorkerParameters
     }
 
 
-    fun getTrendingList(): LiveData<Any> {
+    private fun getTrendingList(): LiveData<Any> {
         val queryMap = HashMap<String, String>()
         return repository.getCall(
             Constants.trendingRepoGetUrl,
