@@ -12,7 +12,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AppRepository private constructor(private var mTrendingDao: TrendingDao) {
+open class AppRepository private constructor(private var mTrendingDao: TrendingDao) {
 
     companion object {
         // Singleton prevents multiple instances of database opening at the
@@ -71,5 +71,10 @@ class AppRepository private constructor(private var mTrendingDao: TrendingDao) {
 
     suspend fun deleteAll() {
         withContext(Dispatchers.IO) { mTrendingDao.deleteAll() }
+    }
+
+    fun getStringn():String
+    {
+        return "HI"
     }
 }

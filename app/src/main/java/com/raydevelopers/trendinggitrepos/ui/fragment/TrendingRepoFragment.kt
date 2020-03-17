@@ -19,7 +19,7 @@ import com.raydevelopers.trendinggitrepos.model.TrendingRepositoryListObject
 import com.raydevelopers.trendinggitrepos.ui.viewmodel.TrendingRepoViewModel
 import kotlinx.android.synthetic.main.trending_repo_error_state.view.*
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import com.raydevelopers.trendinggitrepos.utility.DependencyProvider
 
 
 class TrendingRepoFragment : Fragment() {
@@ -46,13 +46,13 @@ class TrendingRepoFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(TrendingRepoViewModel::class.java)
+        viewModel = getViewModel()
         mRepoFragmentBinding?.shimmerContainer?.startShimmer()
         // observer the list retrieved from database
         observeDatabaseList()
         // observer work manager
         observerWorkManagerResponse()
-        // check if launchec forst time to fill the database
+        // check if launches for the time to fill the database
         if(launchedFirstTime())
             viewModel.runWorkManagerTask()
 
@@ -83,7 +83,7 @@ class TrendingRepoFragment : Fragment() {
     }
 
     private fun observerWorkManagerResponse() {
-        viewModel.getAppRepositoryLiveData().observe(viewLifecycleOwner, Observer { state ->
+        viewModel.getWorkManagerStateLiveData().observe(viewLifecycleOwner, Observer { state ->
             if (state != null) {
                 if (!state) {
                     mRepoFragmentBinding?.swipeRefresh?.isRefreshing = false
@@ -126,4 +126,11 @@ class TrendingRepoFragment : Fragment() {
         }
         return firstTimeLaunch?:true
     }
+
+    private fun getViewModel(): TrendingRepoViewModel {
+        var viewModelFactory = DependencyProvider.provideViewModelFactory(activity!!.application)
+        return ViewModelProviders.of(this, viewModelFactory).get(TrendingRepoViewModel::class.java)
+    }
+
+
 }

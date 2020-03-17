@@ -3,6 +3,7 @@ package com.raydevelopers.trendinggitrepos.ui.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.raydevelopers.trendinggitrepos.database.AppDatabase
@@ -12,20 +13,12 @@ import com.raydevelopers.trendinggitrepos.workers.TrendingRepoListWorker
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-class TrendingRepoViewModel(application: Application) : AndroidViewModel(application) {
+class TrendingRepoViewModel(private val appRepository: AppRepository
+                            ,private val workManager: WorkManager) : ViewModel() {
 
     val allTrendingRepositoryList: LiveData<List<TrendingRepositoryListObject>>
-    private val repository: AppRepository
-    private val workManager = WorkManager.getInstance(application)
+            = appRepository.allTrendingListLiveData
     private val TAG_OUTPUT = "workTag"
-    var refreshOnButtonClicked = false
-    init {
-        // Gets reference to WordDao from WordRoomDatabase to construct
-        // the correct WordRepository.
-        val trendingDao = AppDatabase.getDatabase(application,viewModelScope).trendingDao()
-        repository = AppRepository.getInstance(trendingDao)
-        allTrendingRepositoryList = repository.allTrendingListLiveData
-    }
 
     private fun createConstraints() = Constraints.Builder()
         // other values(NOT_REQUIRED, CONNECTED, NOT_ROAMING, METERED)
@@ -48,12 +41,18 @@ class TrendingRepoViewModel(application: Application) : AndroidViewModel(applica
     {
         workManager.enqueueUniquePeriodicWork(TAG_OUTPUT,ExistingPeriodicWorkPolicy.REPLACE,createWorkRequest())
     }
-    fun getAppRepositoryLiveData():LiveData<Boolean>
+    fun getWorkManagerStateLiveData():LiveData<Boolean>
     {
-        return repository.getWorkManagerStateLiveData()
+        return appRepository.getWorkManagerStateLiveData()
     }
+
     fun setWorkerState(state:Boolean)
     {
-        repository.setWorkManagerState(state)
+        appRepository.setWorkManagerState(state)
     }
+
+    fun getTrendingListLiveData(): LiveData<List<TrendingRepositoryListObject>> {
+        return appRepository.allTrendingListLiveData
+    }
+
 }

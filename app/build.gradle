@@ -15,6 +15,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -22,6 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     dataBinding {
         enabled = true
     }
@@ -34,7 +36,7 @@ android {
     }
     testOptions {
         unitTests {
-            includeAndroidResources = true
+            returnDefaultValues = true
         }
     }
 }
@@ -50,6 +52,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+    implementation 'com.android.support:multidex:1.0.3'
 
     // adding network libraries
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
@@ -75,5 +79,31 @@ dependencies {
 
     // adding work manager for syncing database to network
     implementation "androidx.work:work-runtime-ktx:2.3.3"
+
+    // Dependencies for local unit tests
+    // Required -- JUnit 4 framework
+    implementation 'junit:junit:4.12'
+    // Optional -- Robolectric environment
+    implementation 'androidx.test:core:1.2.0'
+    implementation "androidx.arch.core:core-testing:2.1.0"
+
+    // For recycler view actions
+    androidTestImplementation ('com.android.support.test.espresso:espresso-contrib:2.0') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
+
+    testImplementation "org.powermock:powermock-module-junit4:2.0.2"
+    testImplementation "org.powermock:powermock-api-mockito2:2.0.2"
+
+    testImplementation "org.mockito:mockito-core:2.28.2"
+    testImplementation "org.mockito:mockito-android:2.24.5"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
+
+
+    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:3.2.0"
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.2.0'
+
 
 }
